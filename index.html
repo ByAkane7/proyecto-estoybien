@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EstoyBien</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="phone-frame">
+        
+        <div id="screen-welcome" class="screen active">
+            <div class="top-bar">
+                <div class="settings-btn" onclick="openSettings()">
+                    <i class="fa-solid fa-gear"></i> Ajustes
+                </div>
+            </div>
+
+            <div class="center-content">
+                <div style="margin-bottom: 2vh;">
+                    <i class="fa-solid fa-heart-pulse" style="font-size: 4rem; color: var(--color-primary);"></i>
+                </div>
+                
+                <h1>Bienvenido</h1>
+                <p>Tu seguridad diaria</p>
+
+                <button class="btn-circle" onclick="showLoginForm('Iniciar Sesión')">
+                    INICIAR<br>SESIÓN
+                </button>
+
+                <button class="btn-rect outline" onclick="showLoginForm('Registrar')">
+                    Registrar
+                </button>
+            </div>
+        </div>
+
+        <div id="screen-login-form" class="screen">
+            <div class="top-bar">
+                <div class="settings-btn" onclick="showScreen('screen-welcome')">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </div>
+            </div>
+
+            <div class="center-content">
+                <h2 id="form-title">Acceso</h2>
+
+                <div class="input-group">
+                    <input type="text" class="input-field" placeholder="Nº Tarjeta Sanitaria">
+                </div>
+                <div class="input-group">
+                    <input type="password" class="input-field" placeholder="Contraseña">
+                </div>
+
+                <button class="btn-rect solid" onclick="goToHome()">
+                    CONFIRMAR
+                </button>
+            </div>
+        </div>
+
+        <div id="screen-home" class="screen">
+            <div class="top-bar">
+                <span>Hola, María</span>
+                <i class="fa-solid fa-gear" style="font-size: 1.5rem; cursor: pointer;" onclick="openSettings()"></i>
+            </div>
+
+            <div class="center-content">
+                <div class="timer-display" id="timer-display">23:59:59</div>
+                
+                <button class="btn-circle pulse-anim" onclick="resetTimer()">
+                    ESTOY<br>BIEN
+                </button>
+
+                <p style="margin-top: 2rem;">Próximo aviso:<br><strong>Mañana 10:00</strong></p>
+                
+                <button onclick="forceAlert()" style="margin-top: 3rem; opacity: 0.3; border:none; background:none; font-size: 1rem;">Alerta</button>
+            </div>
+        </div>
+
+        <div id="screen-alert" class="screen alert-mode">
+            <div class="center-content">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 5rem; margin-bottom: 1rem;"></i>
+                <h1>¡ALERTA!</h1>
+                <h2>Tiempo Agotado</h2>
+                
+                <p style="color: white; margin-bottom: 2rem;">¿Necesitas ayuda?</p>
+
+                <button class="btn-rect" onclick="cancelAlert()">
+                    CANCELAR / ESTOY BIEN
+                </button>
+
+                <p style="color: white; margin-top: 2rem; font-size: 1.5rem;">
+                    Avisando a emergencias en <br>
+                    <span id="alert-seconds" style="font-size: 3rem; font-weight: bold;">60</span>s
+                </p>
+            </div>
+        </div>
+
+        <div id="modal-settings" class="modal-overlay">
+            <div class="top-bar">
+                <i class="fa-solid fa-xmark" style="font-size: 2.5rem; color: #333; cursor:pointer;" onclick="closeSettings()"></i>
+            </div>
+            
+            <div class="center-content">
+                <h2>Frecuencia de Aviso</h2>
+                <button class="btn-option" onclick="selectTime(12)">Cada 12 Horas</button>
+                <button class="btn-option selected" onclick="selectTime(24)">Cada 24 Horas</button>
+                <button class="btn-option" onclick="selectTime(48)">Cada 48 Horas</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
