@@ -192,7 +192,7 @@ async function procesarFormulario() {
     const endpoint = tipoAccion === 'Registrar' ? '/api/registrar' : '/api/login';
 
     try {
-        const respuesta = await fetch(`https://backend-estoybien.onrender.com/${endpoint}`, {
+        const respuesta = await fetch(`https://backend-estoybien.onrender.com${endpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
