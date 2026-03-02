@@ -30,7 +30,7 @@
                     INICIAR<br>SESIÓN
                 </button>
 
-                <button class="btn-rect outline" onclick="showLoginForm('Registrar')">
+                <button type="button" class="btn-rect outline" onclick="showLoginForm('Registrar')">
                     Registrar
                 </button>
             </div>
@@ -47,13 +47,16 @@
                 <h2 id="form-title">Acceso</h2>
 
                 <div class="input-group">
-                    <input type="text" class="input-field" placeholder="Nº Tarjeta Sanitaria">
-                </div>
-                <div class="input-group">
-                    <input type="password" class="input-field" placeholder="Contraseña">
+                    <input type="text" id="input-tarjeta" class="input-field" placeholder="Nº Tarjeta Sanitaria">
                 </div>
 
-                <button class="btn-rect solid" onclick="goToHome()">
+                <div class="input-group">
+                    <input type="password" id="input-password" class="input-field" placeholder="Contraseña">
+                </div>
+
+                <p id="error-message" style="color: var(--color-alert); font-size: 1.1rem; margin-top: -0.5rem; margin-bottom: 1rem; display: none; font-weight: bold;"></p>
+
+                <button type="button" class="btn-rect solid" onclick="procesarFormulario()">
                     CONFIRMAR
                 </button>
             </div>
