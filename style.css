@@ -306,3 +306,10 @@ p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
     background-color: var(--color-primary); /* Mantenemos el verde original */
     transform: scale(1); /* Evitamos que se haga grande al pasar el ratón */
 }
+
+/* Estado del cronómetro cuando ya se puede fichar */
+.timer-display.ready {
+    color: var(--color-primary); /* Se pone verde */
+    text-shadow: 0 0 15px rgba(46, 125, 50, 0.2); /* Pequeño brillo sutil */
+    transition: color 0.5s ease; /* Transición suave para que no cambie de golpe */
+}

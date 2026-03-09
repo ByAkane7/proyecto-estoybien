@@ -63,7 +63,8 @@ function startTimer() {
 }
 
 /**
- * Convierte los segundos al formato reloj y gestiona el color del botón.
+ * Convierte los segundos restantes al formato de reloj, lo pinta en la pantalla 
+ * y cambia su color cuando entra en la ventana permitida.
  */
 function updateDisplay() {
     const h = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
@@ -73,19 +74,13 @@ function updateDisplay() {
     const displayElement = document.getElementById('timer-display');
     if (displayElement) {
         displayElement.textContent = `${h}:${m}:${s}`;
-    }
 
-    // --- NUEVO: Control del color del botón ---
-    const btn = document.querySelector('.btn-circle');
-    if (btn) {
+        // --- MAGIA DEL COLOR DEL RELOJ ---
+        // Si el tiempo restante es menor o igual al umbral (ej: 4 horas)
         if (remainingSeconds <= thresholdSeconds) {
-            // TIEMPO PERMITIDO: Botón Verde y latiendo
-            btn.classList.remove('disabled');
-            btn.classList.add('pulse-anim');
+            displayElement.classList.add('ready'); // Se pone verde
         } else {
-            // AÚN ES PRONTO: Botón Negro y quieto
-            btn.classList.add('disabled');
-            btn.classList.remove('pulse-anim');
+            displayElement.classList.remove('ready'); // Se queda negro
         }
     }
 }
