@@ -69,13 +69,15 @@
             </div>
 
             <div class="center-content">
-                <div class="timer-display" id="timer-display">23:59:59</div>
-                
-                <button class="btn-circle pulse-anim" onclick="resetTimer()">
-                    ESTOY<br>BIEN
-                </button>
+            <div class="timer-display" id="timer-display">23:59:59</div>
+            
+            <button class="btn-circle pulse-anim" onclick="resetTimer()">
+                ESTOY<br>BIEN
+            </button>
 
-                <p style="margin-top: 2rem;">Próximo aviso:<br><strong>Mañana 10:00</strong></p>
+            <p id="spam-message" style="color: var(--color-alert); font-weight: bold; margin-top: 1rem; display: none;">Aún es pronto para fichar.</p>
+
+            <p style="margin-top: 2rem;">Próximo aviso:<br><strong>Mañana 10:00</strong></p>
                 
                 <button onclick="forceAlert()" style="margin-top: 3rem; opacity: 0.3; border:none; background:none; font-size: 1rem;">Alerta</button>
             </div>

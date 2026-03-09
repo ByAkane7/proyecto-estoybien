@@ -92,16 +92,30 @@ function updateDisplay() {
 /**
  * Función que se ejecuta cuando el usuario pulsa "ESTOY BIEN".
  */
+/**
+ * Función que se ejecuta cuando el usuario pulsa "ESTOY BIEN".
+ */
 function resetTimer() {
-    // 1. ANTI-SPAM: Comprobamos si el botón está bloqueado
+    const spamMsg = document.getElementById('spam-message');
+
+    // 1. ANTI-SPAM: Comprobamos si es demasiado pronto para fichar
     if (remainingSeconds > thresholdSeconds) {
-        alert("Aún es pronto. El botón se pondrá verde cuando sea tu momento de fichar.");
-        return; // El 'return' corta la función aquí, evitando el spam.
+        if (spamMsg) {
+            spamMsg.style.display = 'block'; // Mostramos el texto rojo
+            
+            // Lo ocultamos automáticamente tras 3 segundos
+            setTimeout(() => {
+                spamMsg.style.display = 'none';
+            }, 3000);
+        }
+        return; // Cortamos la función para evitar que cuente como registro
     }
 
-    // 2. PREPARACIÓN BACKEND (Esto lo conectaremos en el Paso 3)
-    // Aquí es donde enviaremos el JSON con el registro real a la base de datos
-    console.log("Enviando JSON a PostgreSQL: { tarjeta, hora_registro, frecuencia }");
+    // Ocultamos el mensaje de error por si estuviera visible
+    if (spamMsg) spamMsg.style.display = 'none';
+
+    // 2. PREPARACIÓN BACKEND
+    console.log("Enviando JSON a PostgreSQL...");
 
     // 3. Reseteamos el reloj
     remainingSeconds = totalSeconds;
@@ -181,18 +195,24 @@ function closeSettings() {
 /**
  * Cambia la selección visual y ajusta el reloj real.
  */
+/**
+ * Cambia la selección visual y ajusta el reloj real.
+ */
 function selectTime(hours) {
     document.querySelectorAll('.btn-option').forEach(btn => btn.classList.remove('selected'));
     event.target.classList.add('selected');
     
+    // Calculamos el total de segundos
     totalSeconds = (hours * 3600) - 1; 
     
-    // NUEVO: Calculamos la ventana de tiempo (Umbral)
-    // Si son 12h -> abre 2h antes. Si 24h -> 4h antes. Si 48h -> 8h antes.
+    // Calculamos la ventana de tiempo permitida
     let horasPermitidas = hours === 12 ? 2 : (hours === 24 ? 4 : 8);
     thresholdSeconds = horasPermitidas * 3600;
     
-    resetTimer();
+    // CORRECCIÓN: Actualizamos el reloj directamente saltándonos el anti-spam
+    remainingSeconds = totalSeconds;
+    updateDisplay();
+    
     closeSettings();
 }
 // --- COMUNICACIÓN CON EL BACKEND (MYSQL + NODE.JS) ---
