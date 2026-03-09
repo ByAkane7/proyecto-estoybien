@@ -87,32 +87,40 @@ function updateDisplay() {
 /**
  * Función que se ejecuta cuando el usuario pulsa "ESTOY BIEN".
  */
-/**
- * Función que se ejecuta cuando el usuario pulsa "ESTOY BIEN".
- */
-function resetTimer() {
+async function resetTimer() {
     const spamMsg = document.getElementById('spam-message');
 
-    // 1. ANTI-SPAM: Comprobamos si es demasiado pronto para fichar
+    // 1. ANTI-SPAM: Comprobamos si es demasiado pronto
     if (remainingSeconds > thresholdSeconds) {
         if (spamMsg) {
-            spamMsg.style.display = 'block'; // Mostramos el texto rojo
-            
-            // Lo ocultamos automáticamente tras 3 segundos
-            setTimeout(() => {
-                spamMsg.style.display = 'none';
-            }, 3000);
+            spamMsg.style.display = 'block';
+            setTimeout(() => { spamMsg.style.display = 'none'; }, 3000);
         }
-        return; // Cortamos la función para evitar que cuente como registro
+        return; 
     }
 
-    // Ocultamos el mensaje de error por si estuviera visible
     if (spamMsg) spamMsg.style.display = 'none';
 
-    // 2. PREPARACIÓN BACKEND
-    console.log("Enviando JSON a PostgreSQL...");
+    // 2. ENVÍO REAL A LA BASE DE DATOS
+    const tarjetaGuardada = localStorage.getItem('tarjetaActiva');
+    const horasConfiguradas = (totalSeconds + 1) / 3600; // Sacamos si son 12, 24 o 48h
 
-    // 3. Reseteamos el reloj
+    if (tarjetaGuardada) {
+        try {
+            // ⚠️ ATENCIÓN: Asegúrate de que esta URL sea la tuya de Render
+            await fetch(`https://backend-estoybien.onrender.com/api/checkin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tarjeta: tarjetaGuardada, frecuencia: horasConfiguradas })
+            });
+            console.log("¡Registro guardado en la nube con éxito!");
+        } catch (error) {
+            console.error("Fallo al guardar en la nube:", error);
+            // Aunque falle el internet, le reiniciamos el reloj para que no suene la alarma
+        }
+    }
+
+    // 3. Reseteamos el reloj en la pantalla
     remainingSeconds = totalSeconds;
     updateDisplay(); 
 }
@@ -252,6 +260,10 @@ async function procesarFormulario() {
         // Reaccionar a lo que dice el servidor
         if (respuesta.ok) {
             // LOGIN O REGISTRO CORRECTO
+            
+            // AQUÍ ES DONDE VA GUARDADA LA TARJETA 
+            localStorage.setItem('tarjetaActiva', tarjeta); 
+            
             goToHome(); 
         } else {
             // ERROR Contraseña mal, usuario ya existe, etc
