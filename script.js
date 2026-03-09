@@ -3,6 +3,7 @@ let timerInterval; // Cronómetro principal (bucle de 24 horas)
 let emergencyInterval; // Controla el contador secundario de 60 segundos de emergencia
 let totalSeconds = 86399; // Representa 24 horas en segundos (24 * 60 * 60 - 1)
 let remainingSeconds = totalSeconds; // Tiempo que le queda al usuario para pulsar el botón
+let thresholdSeconds = 14400; // 4 horas por defecto (cuando se pondrá verde)
 
 // --- NAVEGACIÓN ENTRE PANTALLAS ---
 
@@ -62,7 +63,7 @@ function startTimer() {
 }
 
 /**
- * Convierte los segundos restantes al formato de reloj (HH:MM:SS) y lo pinta en la pantalla.
+ * Convierte los segundos al formato reloj y gestiona el color del botón.
  */
 function updateDisplay() {
     const h = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
@@ -73,13 +74,36 @@ function updateDisplay() {
     if (displayElement) {
         displayElement.textContent = `${h}:${m}:${s}`;
     }
-}
 
+    // --- NUEVO: Control del color del botón ---
+    const btn = document.querySelector('.btn-circle');
+    if (btn) {
+        if (remainingSeconds <= thresholdSeconds) {
+            // TIEMPO PERMITIDO: Botón Verde y latiendo
+            btn.classList.remove('disabled');
+            btn.classList.add('pulse-anim');
+        } else {
+            // AÚN ES PRONTO: Botón Negro y quieto
+            btn.classList.add('disabled');
+            btn.classList.remove('pulse-anim');
+        }
+    }
+}
 /**
  * Función que se ejecuta cuando el usuario pulsa "ESTOY BIEN".
- * Vuelve a poner el contador al máximo (24 horas).
  */
 function resetTimer() {
+    // 1. ANTI-SPAM: Comprobamos si el botón está bloqueado
+    if (remainingSeconds > thresholdSeconds) {
+        alert("Aún es pronto. El botón se pondrá verde cuando sea tu momento de fichar.");
+        return; // El 'return' corta la función aquí, evitando el spam.
+    }
+
+    // 2. PREPARACIÓN BACKEND (Esto lo conectaremos en el Paso 3)
+    // Aquí es donde enviaremos el JSON con el registro real a la base de datos
+    console.log("Enviando JSON a PostgreSQL: { tarjeta, hora_registro, frecuencia }");
+
+    // 3. Reseteamos el reloj
     remainingSeconds = totalSeconds;
     updateDisplay(); 
 }
@@ -154,19 +178,21 @@ function closeSettings() {
  * Cambia la selección visual y ajusta el reloj real según las horas elegidas.
  * @param {number} hours - Las horas que el usuario ha seleccionado.
  */
+/**
+ * Cambia la selección visual y ajusta el reloj real.
+ */
 function selectTime(hours) {
-    // 1. Cambiamos el color verde al botón pulsado
     document.querySelectorAll('.btn-option').forEach(btn => btn.classList.remove('selected'));
     event.target.classList.add('selected');
     
-    // 2. MAGIA: Convertimos las horas elegidas a segundos reales
-    // (Horas * 60 minutos * 60 segundos) - 1 (para que empiece en :59:59)
     totalSeconds = (hours * 3600) - 1; 
     
-    // 3. Reiniciamos el cronómetro para que aplique el nuevo tiempo de inmediato
-    resetTimer();
+    // NUEVO: Calculamos la ventana de tiempo (Umbral)
+    // Si son 12h -> abre 2h antes. Si 24h -> 4h antes. Si 48h -> 8h antes.
+    let horasPermitidas = hours === 12 ? 2 : (hours === 24 ? 4 : 8);
+    thresholdSeconds = horasPermitidas * 3600;
     
-    // 4. Cerramos la modal de ajustes automáticamente para mayor comodidad
+    resetTimer();
     closeSettings();
 }
 // --- COMUNICACIÓN CON EL BACKEND (MYSQL + NODE.JS) ---

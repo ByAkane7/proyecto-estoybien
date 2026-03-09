@@ -295,3 +295,14 @@ p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
     background-color: var(--color-primary);
     color: white;
 }
+
+/* Estado inactivo/bloqueado del botón principal (Mismo verde, pero sin latir) */
+.btn-circle.disabled {
+    animation: none; /* Quitamos el latido */
+    cursor: default; /* El ratón ya no sale con la manita de hacer clic */
+}
+
+.btn-circle.disabled:hover {
+    background-color: var(--color-primary); /* Mantenemos el verde original */
+    transform: scale(1); /* Evitamos que se haga grande al pasar el ratón */
+}
