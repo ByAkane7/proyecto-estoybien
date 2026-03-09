@@ -151,18 +151,24 @@ function closeSettings() {
 }
 
 /**
- * Cambia la selección visual de los botones de frecuencia de aviso.
+ * Cambia la selección visual y ajusta el reloj real según las horas elegidas.
  * @param {number} hours - Las horas que el usuario ha seleccionado.
  */
 function selectTime(hours) {
-    // Quitamos la clase 'selected' de todos los botones
+    // 1. Cambiamos el color verde al botón pulsado
     document.querySelectorAll('.btn-option').forEach(btn => btn.classList.remove('selected'));
-    // Le ponemos la clase 'selected' solo al botón que se ha pulsado
     event.target.classList.add('selected');
     
-    alert(`Frecuencia cambiada a ${hours} horas`);
+    // 2. MAGIA: Convertimos las horas elegidas a segundos reales
+    // (Horas * 60 minutos * 60 segundos) - 1 (para que empiece en :59:59)
+    totalSeconds = (hours * 3600) - 1; 
+    
+    // 3. Reiniciamos el cronómetro para que aplique el nuevo tiempo de inmediato
+    resetTimer();
+    
+    // 4. Cerramos la modal de ajustes automáticamente para mayor comodidad
+    closeSettings();
 }
-
 // --- COMUNICACIÓN CON EL BACKEND (MYSQL + NODE.JS) ---
 
 /**
