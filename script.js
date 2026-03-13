@@ -371,3 +371,63 @@ async function error1(err) {
         if (mapInfo) mapInfo.innerHTML = "<span style='color: var(--color-alert);'>Error crítico: Sin conexión para ubicar.</span>";
     }
 }
+
+// ==========================================
+// PANEL DE ADMINISTRACIÓN (VER BASE DE DATOS)
+// ==========================================
+
+async function showAdmin() {
+    // 1. Mostramos la pantalla
+    showScreen('screen-admin');
+    
+    const contRegistros = document.getElementById('admin-registros');
+    const contEmergencias = document.getElementById('admin-emergencias');
+
+    contRegistros.innerHTML = "Conectando con la base de datos...";
+    contEmergencias.innerHTML = "Conectando con la base de datos...";
+
+    try {
+        // 2. Pedimos los datos a tu servidor en Render
+        const respuesta = await fetch('https://backend-estoybien.onrender.com/api/admin/datos');
+        const datos = await respuesta.json();
+
+        // 3. Pintamos las Emergencias (en rojo para que destaquen)
+        if (datos.emergencias && datos.emergencias.length > 0) {
+            let htmlEmer = "";
+            datos.emergencias.forEach(e => {
+                const fecha = new Date(e.fecha_emergencia).toLocaleString();
+                htmlEmer += `
+                <div style="background: #fff5f5; padding: 10px; margin-bottom: 10px; border-radius: 10px; border: 2px solid var(--color-alert);">
+                    <strong>Tarjeta:</strong> ${e.tarjeta_sanitaria}<br>
+                    <strong>Lat:</strong> ${e.latitud} | <strong>Lon:</strong> ${e.longitud}<br>
+                    <span style="color: #888; font-size: 0.9em;"><i class="fa-regular fa-clock"></i> ${fecha}</span>
+                </div>`;
+            });
+            contEmergencias.innerHTML = htmlEmer;
+        } else {
+            contEmergencias.innerHTML = "<p style='color: #888;'>No hay alertas registradas.</p>";
+        }
+
+        // 4. Pintamos los Registros/Check-ins (en verde clarito)
+        if (datos.registros && datos.registros.length > 0) {
+            let htmlReg = "";
+            datos.registros.forEach(r => {
+                const fecha = new Date(r.fecha_registro).toLocaleString();
+                htmlReg += `
+                <div style="background: #f9f9f9; padding: 10px; margin-bottom: 10px; border-radius: 10px; border: 1px solid var(--color-primary);">
+                    <strong>Tarjeta:</strong> ${r.tarjeta_sanitaria}<br>
+                    <strong>Frecuencia Elegida:</strong> Cada ${r.frecuencia_horas}h<br>
+                    <span style="color: #888; font-size: 0.9em;"><i class="fa-regular fa-clock"></i> ${fecha}</span>
+                </div>`;
+            });
+            contRegistros.innerHTML = htmlReg;
+        } else {
+            contRegistros.innerHTML = "<p style='color: #888;'>No hay fichajes diarios aún.</p>";
+        }
+
+    } catch (error) {
+        console.error("Error cargando la BD:", error);
+        contRegistros.innerHTML = "<p style='color: var(--color-alert);'>Error al conectar con Render.</p>";
+        contEmergencias.innerHTML = "";
+    }
+}

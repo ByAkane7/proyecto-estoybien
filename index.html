@@ -33,6 +33,10 @@
                 <button type="button" class="btn-rect outline" onclick="showLoginForm('Registrar')">
                     Registrar
                 </button>
+
+                <button onclick="showAdmin()" style="margin-top: 3rem; opacity: 0.3; border:none; background:none; font-size: 1rem; cursor:pointer;">
+                    Base de Datos
+                </button>
             </div>
         </div>
 
@@ -142,6 +146,30 @@
         </div>
 
     </div>
+
+    <div id="screen-admin" class="screen">
+            <div class="top-bar">
+                <div class="settings-btn" onclick="showScreen('screen-welcome')">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </div>
+            </div>
+
+            <div class="center-content" style="justify-content: flex-start; overflow-y: auto; padding-bottom: 2rem;">
+                <h1 style="color: var(--color-primary); font-size: var(--size-h1);">
+                    <i class="fa-solid fa-database"></i> Registros
+                </h1>
+
+                <h2 style="margin-top: 1rem; font-size: 1.2rem; align-self: flex-start;">Últimas Emergencias</h2>
+                <div id="admin-emergencias" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem;">
+                    Cargando...
+                </div>
+
+                <h2 style="margin-top: 2rem; font-size: 1.2rem; align-self: flex-start;">Últimos Check-ins</h2>
+                <div id="admin-registros" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem;">
+                    Cargando...
+                </div>
+            </div>
+        </div>
 
     <script src="script.js"></script>
 </body>
