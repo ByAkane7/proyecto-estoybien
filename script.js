@@ -29,7 +29,8 @@ function showLoginForm(actionTitle) {
     document.getElementById('input-password').value = '';
     
     const errorMsg = document.getElementById('error-message');
-    if (errorMsg) errorMsg.style.display = 'none';
+    // CORRECCIÓN: Usamos visibility
+    if (errorMsg) errorMsg.style.visibility = 'hidden'; 
     
     showScreen('screen-login-form');
 }
@@ -87,27 +88,28 @@ function updateDisplay() {
 /**
  * Función que se ejecuta cuando el usuario pulsa "ESTOY BIEN".
  */
+
 async function resetTimer() {
     const spamMsg = document.getElementById('spam-message');
 
     // 1. ANTI-SPAM: Comprobamos si es demasiado pronto
     if (remainingSeconds > thresholdSeconds) {
         if (spamMsg) {
-            spamMsg.style.display = 'block';
-            setTimeout(() => { spamMsg.style.display = 'none'; }, 3000);
+            spamMsg.style.visibility = 'visible'; 
+            setTimeout(() => { spamMsg.style.visibility = 'hidden'; }, 3000); 
         }
         return; 
     }
 
-    if (spamMsg) spamMsg.style.display = 'none';
+    // CORRECCIÓN: Limpiado para usar solo visibility
+    if (spamMsg) spamMsg.style.visibility = 'hidden';
 
     // 2. ENVÍO REAL A LA BASE DE DATOS
     const tarjetaGuardada = localStorage.getItem('tarjetaActiva');
-    const horasConfiguradas = (totalSeconds + 1) / 3600; // Sacamos si son 12, 24 o 48h
+    const horasConfiguradas = (totalSeconds + 1) / 3600; 
 
     if (tarjetaGuardada) {
         try {
-            // ⚠️ ATENCIÓN: Asegúrate de que esta URL sea la tuya de Render
             await fetch(`https://backend-estoybien.onrender.com/api/checkin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -116,7 +118,6 @@ async function resetTimer() {
             console.log("¡Registro guardado en la nube con éxito!");
         } catch (error) {
             console.error("Fallo al guardar en la nube:", error);
-            // Aunque falle el internet, le reiniciamos el reloj para que no suene la alarma
         }
     }
 
@@ -229,17 +230,16 @@ async function procesarFormulario() {
     const password = document.getElementById('input-password').value;
     const tipoAccion = document.getElementById('form-title').textContent;
     
-    // Capturamos el elemento donde mostraremos los errores
     const errorMsg = document.getElementById('error-message');
     
-    // Lo ocultamos por defecto cada vez que pulsamos el botón
-    if (errorMsg) errorMsg.style.display = 'none';
+    // Lo ocultamos por defecto (como un fantasma)
+    if (errorMsg) errorMsg.style.visibility = 'hidden';
 
     // Comprobar que no estén vacíos
     if (!tarjeta || !password) {
         if (errorMsg) {
             errorMsg.textContent = "Por favor, rellena todos los campos.";
-            errorMsg.style.display = 'block';
+            errorMsg.style.visibility = 'visible'; // CORRECCIÓN
         }
         return;
     }
@@ -259,17 +259,13 @@ async function procesarFormulario() {
 
         // Reaccionar a lo que dice el servidor
         if (respuesta.ok) {
-            // LOGIN O REGISTRO CORRECTO
-            
-            // AQUÍ ES DONDE VA GUARDADA LA TARJETA 
             localStorage.setItem('tarjetaActiva', tarjeta); 
-            
             goToHome(); 
         } else {
             // ERROR Contraseña mal, usuario ya existe, etc
             if (errorMsg) {
                 errorMsg.textContent = datos.mensaje;
-                errorMsg.style.display = 'block';
+                errorMsg.style.visibility = 'visible'; // CORRECCIÓN
             }
         }
 
@@ -277,7 +273,7 @@ async function procesarFormulario() {
         console.error("Error conectando con el servidor:", error);
         if (errorMsg) {
             errorMsg.textContent = "No se pudo conectar con el servidor.";
-            errorMsg.style.display = 'block';
+            errorMsg.style.visibility = 'visible'; // CORRECCIÓN
         }
     }
 }
