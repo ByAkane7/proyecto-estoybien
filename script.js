@@ -147,8 +147,8 @@ function triggerAlert() {
         
         if (emergencySeconds <= 0) {
             clearInterval(emergencyInterval);
-            // Simulación de llamada real
-            alert("¡TIEMPO AGOTADO! Llamando a los servicios de emergencia...");
+          // Llamamos a la función de geolocalización
+            geo1();
         }
     }, 1000); 
 }
@@ -279,5 +279,60 @@ async function procesarFormulario() {
             errorMsg.textContent = "No se pudo conectar con el servidor.";
             errorMsg.style.display = 'block';
         }
+    }
+}
+
+// ==========================================
+// GEOLOCALIZACIÓN Y EMERGENCIA (Del archivo txt)
+// ==========================================
+
+let options1 = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0 // Corregido pequeño typo del txt (era maximumAge)
+};
+
+function geo1() {
+    navigator.geolocation.getCurrentPosition(success1, error1, options1);
+}
+
+async function success1(pos) {
+    const d1 = document.getElementById("d1");
+    let crd = pos.coords;
+    
+    // 1. Mostrar en pantalla como pedía tu txt
+    if (d1) {
+        d1.innerHTML =
+            "<div>Posición actual enviada:</div>" +
+            "<div>Latitud: " + crd.latitude + "</div>" +
+            "<div>Longitud: " + crd.longitude + "</div>" +
+            "<div>Margen de error: " + crd.accuracy + " metros</div>";
+    }
+
+    // 2. Enviar silenciosamente al servidor
+    const tarjetaGuardada = localStorage.getItem('tarjetaActiva');
+    if (tarjetaGuardada) {
+        try {
+            await fetch('https://backend-estoybien.onrender.com/api/emergencia', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    tarjeta: tarjetaGuardada, 
+                    latitud: crd.latitude, 
+                    longitud: crd.longitude 
+                })
+            });
+            console.log("Coordenadas enviadas a la central de emergencias.");
+        } catch (error) {
+            console.error("Fallo al enviar la emergencia a la base de datos:", error);
+        }
+    }
+}
+
+function error1(err) {
+    console.warn("Error (" + err.code + "): " + err.message);
+    const d1 = document.getElementById("d1");
+    if (d1) {
+        d1.innerHTML = "<div style='color: #ffcccc;'>No se pudo obtener la ubicación GPS exacta.</div>";
     }
 }
