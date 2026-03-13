@@ -135,7 +135,7 @@ function triggerAlert() {
     showScreen('screen-alert');
     
     // Contador de 60 segundos
-    let emergencySeconds = 20;
+    let emergencySeconds = 60;
     document.getElementById('alert-seconds').textContent = emergencySeconds;
     
     // Nos aseguramos de limpiar cualquier intervalo anterior
@@ -283,95 +283,95 @@ async function procesarFormulario() {
 }
 
 // ==========================================
-// GEOLOCALIZACIÓN Y EMERGENCIA (Del archivo txt)
+// GEOLOCALIZACIÓN, MAPAS Y EMERGENCIA
 // ==========================================
 
 let options1 = {
-    enableHighAccuracy: false,
-    timeout: 15000,
-    maximumAge: 0 // Corregido pequeño typo del txt (era maximumAge)
+    enableHighAccuracy: false, // En false para que te funcione en el PC de la presentación
+    timeout: 15000, 
+    maximumAge: 0 
 };
 
 function geo1() {
     navigator.geolocation.getCurrentPosition(success1, error1, options1);
 }
 
+/**
+ * Muestra la nueva pantalla, imprime los datos y carga Google Maps.
+ */
+function mostrarMapa(lat, lon, precision, origen) {
+    // 1. Ocultar la alerta roja y mostrar la pantalla del mapa
+    showScreen('screen-map');
+    
+    // 2. Escribir los datos en texto
+    const mapInfo = document.getElementById("map-info");
+    if (mapInfo) {
+        mapInfo.innerHTML = `Origen: ${origen}<br>Lat: ${lat} | Lon: ${lon}<br>Precisión: ${precision}`;
+    }
+    
+    // 3. Cargar el mapa de Google Maps (Enlace seguro y gratuito)
+    const iframe = document.getElementById("google-map");
+    if (iframe) {
+        iframe.src = `https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
+    }
+}
+
+// --- ÉXITO: SI EL NAVEGADOR ENCUENTRA EL GPS ---
 async function success1(pos) {
-    const d1 = document.getElementById("d1");
     let crd = pos.coords;
     
-    // 1. Mostrar en pantalla como pedía tu txt
-    if (d1) {
-        d1.innerHTML =
-            "<div>Posición actual enviada:</div>" +
-            "<div>Latitud: " + crd.latitude + "</div>" +
-            "<div>Longitud: " + crd.longitude + "</div>" +
-            "<div>Margen de error: " + crd.accuracy + " metros</div>";
-    }
+    // Mostramos la pantalla del mapa
+    mostrarMapa(crd.latitude, crd.longitude, crd.accuracy + " metros", "GPS Dispositivo");
 
-    // 2. Enviar silenciosamente al servidor
+    // Enviamos a tu base de datos (PostgreSQL)
     const tarjetaGuardada = localStorage.getItem('tarjetaActiva');
     if (tarjetaGuardada) {
         try {
             await fetch('https://backend-estoybien.onrender.com/api/emergencia', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    tarjeta: tarjetaGuardada, 
-                    latitud: crd.latitude, 
-                    longitud: crd.longitude 
-                })
+                body: JSON.stringify({ tarjeta: tarjetaGuardada, latitud: crd.latitude, longitud: crd.longitude })
             });
-            console.log("Coordenadas enviadas a la central de emergencias.");
+            console.log("Coordenadas exactas guardadas en la BD.");
         } catch (error) {
-            console.error("Fallo al enviar la emergencia a la base de datos:", error);
+            console.error("Fallo al guardar en la BD:", error);
         }
     }
 }
 
+// --- ERROR: SI EL GPS FALLA, BUSCAMOS POR LA IP DEL ORDENADOR ---
 async function error1(err) {
-    console.warn("GPS falló (" + err.code + "): " + err.message + ". Intentando ubicar por IP...");
-    
-    const d1 = document.getElementById("d1");
+    console.warn("GPS falló. Intentando ubicar por IP de red...");
     
     try {
-        // PLAN B: Usamos una API gratuita que localiza la conexión a Internet automáticamente
+        // Obtenemos la ubicación de la IP
         const respuesta = await fetch('https://ipapi.co/json/');
         const datosIP = await respuesta.json();
 
         if (datosIP.latitude && datosIP.longitude) {
-            // 1. Mostrar en pantalla que es una ubicación aproximada
-            if (d1) {
-                d1.innerHTML =
-                    "<div>Posición obtenida (Por Red):</div>" +
-                    "<div>Latitud: " + datosIP.latitude + "</div>" +
-                    "<div>Longitud: " + datosIP.longitude + "</div>" +
-                    "<div>Ciudad: " + datosIP.city + "</div>";
-            }
+            
+            // Mostramos la pantalla del mapa
+            mostrarMapa(datosIP.latitude, datosIP.longitude, "Aproximada (Ciudad)", "Red Internet");
 
-            // 2. Enviar silenciosamente al servidor tu base de datos
+            // Enviamos a tu base de datos (PostgreSQL)
             const tarjetaGuardada = localStorage.getItem('tarjetaActiva');
             if (tarjetaGuardada) {
                 await fetch('https://backend-estoybien.onrender.com/api/emergencia', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        tarjeta: tarjetaGuardada, 
-                        latitud: datosIP.latitude, 
-                        longitud: datosIP.longitude 
-                    })
+                    body: JSON.stringify({ tarjeta: tarjetaGuardada, latitud: datosIP.latitude, longitud: datosIP.longitude })
                 });
-                console.log("Coordenadas de emergencia (vía IP) guardadas.");
+                console.log("Coordenadas de red guardadas en la BD.");
             }
         } else {
-            throw new Error("La API de IP no devolvió coordenadas.");
+            throw new Error("No hay coordenadas de red.");
         }
         
     } catch (errorFallback) {
-        // Si ya falla absolutamente todo (no hay internet)
         console.error("Fallo total de ubicación:", errorFallback);
-        if (d1) {
-            d1.innerHTML = "<div style='color: #ffcccc;'>No se pudo obtener la ubicación exacta.</div>";
-        }
+        // Si no hay GPS ni Internet, mostramos el mapa pero con un error en el texto
+        showScreen('screen-map');
+        const mapInfo = document.getElementById("map-info");
+        if (mapInfo) mapInfo.innerHTML = "<span style='color: var(--color-alert);'>Error crítico: Sin conexión para ubicar.</span>";
     }
 }
