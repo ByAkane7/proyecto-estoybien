@@ -135,7 +135,7 @@ function triggerAlert() {
     showScreen('screen-alert');
     
     // Contador de 60 segundos
-    let emergencySeconds = 60;
+    let emergencySeconds = 20;
     document.getElementById('alert-seconds').textContent = emergencySeconds;
     
     // Nos aseguramos de limpiar cualquier intervalo anterior
@@ -329,10 +329,49 @@ async function success1(pos) {
     }
 }
 
-function error1(err) {
-    console.warn("Error (" + err.code + "): " + err.message);
+async function error1(err) {
+    console.warn("GPS falló (" + err.code + "): " + err.message + ". Intentando ubicar por IP...");
+    
     const d1 = document.getElementById("d1");
-    if (d1) {
-        d1.innerHTML = "<div style='color: #ffcccc;'>No se pudo obtener la ubicación GPS exacta.</div>";
+    
+    try {
+        // PLAN B: Usamos una API gratuita que localiza la conexión a Internet automáticamente
+        const respuesta = await fetch('https://ipapi.co/json/');
+        const datosIP = await respuesta.json();
+
+        if (datosIP.latitude && datosIP.longitude) {
+            // 1. Mostrar en pantalla que es una ubicación aproximada
+            if (d1) {
+                d1.innerHTML =
+                    "<div>Posición obtenida (Por Red):</div>" +
+                    "<div>Latitud: " + datosIP.latitude + "</div>" +
+                    "<div>Longitud: " + datosIP.longitude + "</div>" +
+                    "<div>Ciudad: " + datosIP.city + "</div>";
+            }
+
+            // 2. Enviar silenciosamente al servidor tu base de datos
+            const tarjetaGuardada = localStorage.getItem('tarjetaActiva');
+            if (tarjetaGuardada) {
+                await fetch('https://backend-estoybien.onrender.com/api/emergencia', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        tarjeta: tarjetaGuardada, 
+                        latitud: datosIP.latitude, 
+                        longitud: datosIP.longitude 
+                    })
+                });
+                console.log("Coordenadas de emergencia (vía IP) guardadas.");
+            }
+        } else {
+            throw new Error("La API de IP no devolvió coordenadas.");
+        }
+        
+    } catch (errorFallback) {
+        // Si ya falla absolutamente todo (no hay internet)
+        console.error("Fallo total de ubicación:", errorFallback);
+        if (d1) {
+            d1.innerHTML = "<div style='color: #ffcccc;'>No se pudo obtener la ubicación exacta.</div>";
+        }
     }
 }
