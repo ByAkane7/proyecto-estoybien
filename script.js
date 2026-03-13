@@ -287,7 +287,7 @@ async function procesarFormulario() {
 // ==========================================
 
 let options1 = {
-    enableHighAccuracy: true,
+    enableHighAccuracy: false,
     timeout: 15000,
     maximumAge: 0 // Corregido pequeño typo del txt (era maximumAge)
 };
