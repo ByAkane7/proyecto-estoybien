@@ -1,9 +1,11 @@
 // --- VARIABLES GLOBALES ---
-let timerInterval; // Cronómetro principal (bucle de 24 horas)
-let emergencyInterval; // Controla el contador secundario de 60 segundos de emergencia
+let timerInterval; 
+let emergencyInterval; 
 let totalSeconds = 86399; // Representa 24 horas en segundos (24 * 60 * 60 - 1)
-let remainingSeconds = totalSeconds; // Tiempo que le queda al usuario para pulsar el botón
-let thresholdSeconds = 14400; // 4 horas por defecto (cuando se pondrá verde)
+let remainingSeconds = totalSeconds; 
+
+// (24 * 3600) - 60 segundos = 86340 (Las 23:59:00)
+let thresholdSeconds = 86340;
 
 // --- NAVEGACIÓN ENTRE PANTALLAS ---
 
@@ -196,9 +198,7 @@ function closeSettings() {
  * Cambia la selección visual y ajusta el reloj real según las horas elegidas.
  * @param {number} hours - Las horas que el usuario ha seleccionado.
  */
-/**
- * Cambia la selección visual y ajusta el reloj real.
- */
+
 /**
  * Cambia la selección visual y ajusta el reloj real.
  */
@@ -206,14 +206,14 @@ function selectTime(hours) {
     document.querySelectorAll('.btn-option').forEach(btn => btn.classList.remove('selected'));
     event.target.classList.add('selected');
     
-    // Calculamos el total de segundos
+    // Calculamos el total de segundos (ej: 23:59:59)
     totalSeconds = (hours * 3600) - 1; 
     
-    // Calculamos la ventana de tiempo permitida
-    let horasPermitidas = hours === 12 ? 2 : (hours === 24 ? 4 : 8);
-    thresholdSeconds = horasPermitidas * 3600;
+    // NUEVO CÁLCULO PARA PRESENTACIÓN: Se activa cuando falta 1 minuto
+    // (Ej: para 12h, se pondrá verde a las 11:59:00)
+    thresholdSeconds = (hours * 3600) - 60;
     
-    // CORRECCIÓN: Actualizamos el reloj directamente saltándonos el anti-spam
+    // Actualizamos el reloj directamente saltándonos el anti-spam
     remainingSeconds = totalSeconds;
     updateDisplay();
     
