@@ -33,7 +33,6 @@
                 <button type="button" class="btn-rect outline" onclick="showLoginForm('Registrar')">
                     Registrar
                 </button>
-
             </div>
         </div>
 
@@ -65,42 +64,44 @@
 
         <div id="screen-home" class="screen">
             <div class="top-bar">
-                <span>Hola, María</span>
+                <span>Sesión Activa</span>
                 <i class="fa-solid fa-gear" style="font-size: 1.5rem; cursor: pointer;" onclick="openSettings()"></i>
             </div>
 
             <div class="center-content">
-            <div class="timer-display" id="timer-display">23:59:59</div>
-            
-            <button class="btn-circle pulse-anim" onclick="resetTimer()">
-                ESTOY<br>BIEN
-            </button>
-
-           <p id="spam-message" style="color: var(--color-alert); font-weight: bold; margin-top: 1rem; visibility: hidden; min-height: 1.5rem;">Aún es pronto para fichar.</p>
-
-            <p style="margin-top: 2rem;">Próximo aviso:<br><strong>Mañana 10:00</strong></p>
+                <div class="timer-display" id="timer-display">23:59:59</div>
                 
-                <button onclick="forceAlert()" style="margin-top: 3rem; opacity: 0.3; border:none; background:none; font-size: 1rem;">Alerta</button>
-                <button onclick="showAdmin()" style="border:none; opacity: 0.3;background:none; font-size: 1rem; cursor:pointer;">
+                <button class="btn-circle pulse-anim" onclick="resetTimer()">
+                    ESTOY<br>BIEN
+                </button>
+
+                <p id="spam-message" style="color: var(--color-alert); font-weight: bold; margin-top: 1rem; visibility: hidden; min-height: 1.5rem;">Registro denegado por frecuencia.</p>
+                <p style="margin-top: 2rem;">Protección Activa</p>
+                    
+                <div style="display: flex; gap: 2rem; margin-top: 3rem; opacity: 0.3;">
+                    <button onclick="forceAlert()" style="border:none; background:none; font-size: 1rem; cursor:pointer;">
+                        Alerta
+                    </button>
+                    <button onclick="showAdmin()" style="border:none; background:none; font-size: 1rem; cursor:pointer;">
                         Base de Datos
                     </button>
+                </div>
             </div>
         </div>
 
         <div id="screen-alert" class="screen alert-mode">
             <div class="center-content">
                 <i class="fa-solid fa-triangle-exclamation" style="font-size: 5rem; margin-bottom: 1rem;"></i>
-                <h1>¡ALERTA!</h1>
+                <h1>ALERTA</h1>
                 <h2>Tiempo Agotado</h2>
-                
-                <p style="color: white; margin-bottom: 2rem;">¿Necesitas ayuda?</p>
+                <p style="color: white; margin-bottom: 2rem;">Iniciando protocolo de ayuda.</p>
 
                 <button class="btn-rect" onclick="cancelAlert()">
                     CANCELAR / ESTOY BIEN
                 </button>
 
                 <p style="color: white; margin-top: 2rem; font-size: 1.5rem;">
-                    Avisando a emergencias en <br>
+                    Transmitiendo coordenadas en <br>
                     <span id="alert-seconds" style="font-size: 3rem; font-weight: bold;">60</span>s
                 </p>
             </div>
@@ -109,19 +110,19 @@
         <div id="screen-map" class="screen">
             <div class="top-bar">
                 <div class="settings-btn" onclick="cancelAlert()">
-                    <i class="fa-solid fa-arrow-left"></i> Falsa Alarma
+                    <i class="fa-solid fa-arrow-left"></i> Abortar
                 </div>
             </div>
 
             <div class="center-content">
                 <h1 style="color: var(--color-primary); font-size: var(--size-h1);">
-                    <i class="fa-solid fa-location-dot"></i> Ayuda en camino
+                    <i class="fa-solid fa-location-dot"></i> Protocolo Activo
                 </h1>
                 
-                <p style="margin-bottom: 1rem;">Tus coordenadas han sido enviadas a emergencias:</p>
+                <p style="margin-bottom: 1rem;">Ubicación transmitida a la central.</p>
                 
                 <div id="map-info" style="width: 100%; max-width: 380px; padding: 1rem; background: #f9f9f9; border: var(--border-width) solid var(--color-border); border-radius: 15px; font-weight: bold; color: var(--color-text); font-size: 1rem; margin-bottom: 1.5rem;">
-                    Buscando ubicación...
+                    Buscando señal GPS...
                 </div>
                 
                 <iframe id="google-map" width="100%" height="300" frameborder="0" style="border: var(--border-width) solid var(--color-border); border-radius: 20px; box-shadow: 0 0.5rem 1.5rem var(--color-shadow); max-width: 380px;" allowfullscreen></iframe>
@@ -138,41 +139,41 @@
             </div>
             
             <div class="center-content">
-                <h2>Frecuencia de Aviso</h2>
-                <button class="btn-option" onclick="selectTime(12)">Cada 12 Horas</button>
-                <button class="btn-option selected" onclick="selectTime(24)">Cada 24 Horas</button>
-                <button class="btn-option" onclick="selectTime(48)">Cada 48 Horas</button>
+                <h2>Frecuencia Operativa</h2>
+                <button class="btn-option" onclick="selectTime(this, 12)">Cada 12 Horas</button>
+                <button class="btn-option selected" onclick="selectTime(this, 24)">Cada 24 Horas</button>
+                <button class="btn-option" onclick="selectTime(this, 48)">Cada 48 Horas</button>
             </div>
         </div>
 
     </div>
 
     <div id="screen-admin" class="screen">
-            <div class="top-bar">
-                <div class="settings-btn" onclick="showScreen('screen-home')">
-                    <i class="fa-solid fa-arrow-left"></i> Volver
-                </div>
-            </div>
-
-            <div class="center-content" style="justify-content: flex-start; overflow-y: auto; padding-bottom: 2rem;">
-                <h1 style="color: var(--color-primary); font-size: var(--size-h1);">
-                    <i class="fa-solid fa-database"></i> Registros
-                </h1>
-
-                <div style="display: flex; gap: 1rem; width: 100%; max-width: 380px; margin: 1.5rem 0;">
-                    <button id="btn-tab-checkin" class="toggle-btn active" onclick="switchAdminTab('checkin')">Check-ins</button>
-                    <button id="btn-tab-emer" class="toggle-btn" onclick="switchAdminTab('emer')">Emergencias</button>
-                </div>
-
-                <div id="admin-registros" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem; display: block;">
-                    Cargando...
-                </div>
-
-                <div id="admin-emergencias" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem; display: none;">
-                    Cargando...
-                </div>
+        <div class="top-bar">
+            <div class="settings-btn" onclick="showScreen('screen-home')">
+                <i class="fa-solid fa-arrow-left"></i> Volver
             </div>
         </div>
+
+        <div class="center-content" style="justify-content: flex-start; overflow-y: auto; padding-bottom: 2rem;">
+            <h1 style="color: var(--color-primary); font-size: var(--size-h1);">
+                <i class="fa-solid fa-database"></i> Telemetría
+            </h1>
+
+            <div style="display: flex; gap: 1rem; width: 100%; max-width: 380px; margin: 1.5rem 0;">
+                <button id="btn-tab-checkin" class="toggle-btn active" onclick="switchAdminTab('checkin')">Operativa</button>
+                <button id="btn-tab-emer" class="toggle-btn" onclick="switchAdminTab('emer')">Crítica</button>
+            </div>
+
+            <div id="admin-registros" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem; display: block;">
+                Obteniendo datos...
+            </div>
+
+            <div id="admin-emergencias" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem; display: none;">
+                Obteniendo datos...
+            </div>
+        </div>
+    </div>
         
     <script src="script.js"></script>
 </body>

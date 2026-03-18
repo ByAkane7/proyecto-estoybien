@@ -1,38 +1,26 @@
-/* ========================================== */
-/* VARIABLES GLOBALES                         */
-/* ========================================== */
 :root {
-    /* Paleta de Colores */
-    --color-primary: #2E7D32;  /* Verde: Acción positiva y seguridad */
-    --color-alert:   #D32F2F;  /* Rojo: Urgencia y error */
-    --color-text:    #1A1A1A;  /* Gris: Reduce fatiga visual */
-    --color-bg:      #FFFFFF;  /* Blanco: Maximiza contraste */
-    --color-border:  #CCCCCC;  /* Gris claro: Para límites de contenedores */
+    --color-primary: #2E7D32;  
+    --color-alert:   #D32F2F;  
+    --color-text:    #1A1A1A;  
+    --color-bg:      #FFFFFF;  
+    --color-border:  #CCCCCC;  
     --color-shadow:  rgba(0, 0, 0, 0.2);
 
-    /* --- Escala Tipográfica Relativa--- */
-    --font-family:   'Segoe UI', 'Roboto', 'Open Sans', sans-serif; /* Pila de fuentes nativas */
-    --size-display:  4rem;     /* Gigante para cronómetro */
-    --size-h1:       2.2rem;   /* Títulos principales */
-    --size-h2:       1.8rem;   /* Subtítulos */
-    --size-btn:      1.8rem;   /* Textos de botones */
-    --size-body:     1.2rem;   /* Texto base ampliado */
+    --font-family:   'Segoe UI', 'Roboto', 'Open Sans', sans-serif; 
+    --size-display:  4rem;     
+    --size-h1:       2.2rem;   
+    --size-h2:       1.8rem;   
+    --size-btn:      1.8rem;   
+    --size-body:     1.2rem;   
     
-    /* --- Sistema de Medidas y Formas --- */
-    --btn-rect-min-height: 70px; /* Área táctil ampliada */
-    --radius-btn:      50px;     /* Botones totalmente redondeados */
-    --radius-input:    50px;     /* Inputs ovalados para unificar estilo visual */
-    --border-width:    3px;      /* Bordes gruesos para baja visión */
+    --btn-rect-min-height: 70px; 
+    --radius-btn:      50px;     
+    --radius-input:    50px;     
+    --border-width:    3px;      
 }
 
-/* ========================================== */
-/* RESETEO Y ESTRUCTURA BASE                  */
-/* ========================================== */
-
-/* Reseteo Universal */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
 
-/* El body ahora es simplemente el lienzo de tu app */
 body {
     background-color: var(--color-bg);
     min-height: 100vh;
@@ -40,18 +28,16 @@ body {
     font-size: var(--size-body);
 }
 
-/* Contenedor principal */
 .phone-frame {
     width: 100%;            
     min-height: 100vh;
     position: relative;
-    overflow-x: hidden; /* Evita scroll horizontal indeseado */
+    overflow-x: hidden; 
 }
 
-/* Sistema de Navegación por Pantallas */
 .screen {
     width: 100%;
-    min-height: 100vh; /* Ocupa al menos toda la pantalla */
+    min-height: 100vh; 
     position: absolute;
     top: 0; left: 0;
     display: none;
@@ -66,11 +52,6 @@ body {
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* ========================================== */
-/* COMPONENTES DE INTERFAZ                    */
-/* ========================================== */
-
-/* Barras Superiores */
 .top-bar {
     display: flex;
     justify-content: space-between;
@@ -91,9 +72,9 @@ body {
     text-transform: uppercase;
     transition: transform 0.2s;
 }
+
 .settings-btn:hover { transform: scale(1.05); }
 
-/* Botones Circulares Principales (Cronómetro) */
 .btn-circle {
     width: 65%;             
     max-width: 280px;      
@@ -107,7 +88,6 @@ body {
     box-shadow: 0 0.5rem 1.5rem var(--color-shadow);
     cursor: pointer;
     transition: all 0.2s ease;
-    
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -120,7 +100,6 @@ body {
 .btn-circle:hover { transform: scale(1.05); background-color: #256b29; }
 .btn-circle:active { transform: scale(0.95); }
 
-/* Botones Rectangulares (Login / Registro / Formularios) */
 .btn-rect {
     width: 100%;           
     max-width: 380px; 
@@ -132,7 +111,6 @@ body {
     cursor: pointer;
     transition: transform 0.1s;
     margin-top: 1.5rem;
-    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -153,7 +131,6 @@ body {
 
 .btn-rect:active { transform: scale(0.98); }
 
-/* Campos de Formulario */
 .input-group {
     width: 100%;
     max-width: 380px; 
@@ -179,7 +156,6 @@ body {
     background-color: #fff;
 }
 
-/* Alineación de contenido central */
 .center-content {
     flex-grow: 1;
     display: flex;
@@ -191,16 +167,10 @@ body {
     width: 100%; 
 }
 
-/* Tipografía */
 h1 { font-size: var(--size-h1); color: var(--color-primary); margin-bottom: 0.5rem; }
 h2 { font-size: var(--size-h2); margin-bottom: 1rem; }
 p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
 
-/* ========================================== */
-/* PANTALLA HOME Y EMERGENCIA                 */
-/* ========================================== */
-
-/* Display numérico para el cronómetro */
 .timer-display {
     font-size: var(--size-display);
     font-weight: 800;
@@ -209,7 +179,6 @@ p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
     margin-bottom: 2rem;
 }
 
-/* Animación de latido lento para el botón de check-in */
 .pulse-anim { animation: breathing 4s infinite ease-in-out; }
 @keyframes breathing {
     0% { transform: scale(1); }
@@ -217,7 +186,6 @@ p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
     100% { transform: scale(1); }
 }
 
-/* Estado de Emergencia */
 .alert-mode {
     background-color: var(--color-alert);
     color: white;
@@ -229,7 +197,6 @@ p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
     background: white;
 }
 
-/* Animación de urgencia para el icono de advertencia */
 .alert-mode .fa-triangle-exclamation {
     animation: alarmPulse 0.8s infinite alternate;
 }
@@ -239,98 +206,83 @@ p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
     100% { transform: scale(1.2); opacity: 1; color: #ffcccc; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
 }
 
-/* ========================================== */
-/* MODAL DE AJUSTES                           */
-/* ========================================== */
-
 .modal-overlay {
     position: fixed; 
     top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(255, 255, 255, 0.98);
     display: none;
     flex-direction: column;
-    justify-content: center; /* Centra el contenido verticalmente */
-    align-items: center;     /* Centra el contenido horizontalmente */
+    justify-content: center; 
+    align-items: center;     
     padding: 2rem;
     z-index: 100;
 }
+
 .modal-overlay.open { display: flex; }
 
 .modal-overlay .top-bar {
-    width: 100%; /* Asegura que la cruz de cerrar se quede arriba a la izquierda/derecha */
+    width: 100%; 
     position: absolute;
     top: 0;
     padding: 2rem;
 }
 
-/* Botones de configuración unificados con los de Login (.btn-rect) */
 .btn-option {
     width: 100%;
-    max-width: 380px; /* Exactamente el mismo ancho que .btn-rect */
-    min-height: var(--btn-rect-min-height); /* Misma altura */
-    margin: 0.8rem auto; /* Centrado horizontal automático */
+    max-width: 380px; 
+    min-height: var(--btn-rect-min-height); 
+    margin: 0.8rem auto; 
     padding: 1rem;
-    
     font-size: 1.4rem;
     font-weight: 700;
     color: #888;
     background: white;
-    
     border: var(--border-width) solid var(--color-border);
-    border-radius: var(--radius-btn); /* El radio exacto para forma de pastilla */
+    border-radius: var(--radius-btn); 
     cursor: pointer;
-    
     display: flex;
     justify-content: center;
     align-items: center;
     transition: transform 0.1s, border-color 0.2s, background-color 0.2s;
 }
 
-/* Consistencia de click */
 .btn-option:active { transform: scale(0.98); }
 
-/* Estado seleccionado */
 .btn-option.selected {
     border-color: var(--color-primary);
     background-color: var(--color-primary);
     color: white;
 }
 
-/* Estado inactivo/bloqueado del botón principal (Mismo verde, pero sin latir) */
 .btn-circle.disabled {
-    animation: none; /* Quitamos el latido */
-    cursor: default; /* El ratón ya no sale con la manita de hacer clic */
+    animation: none; 
+    cursor: default; 
 }
 
 .btn-circle.disabled:hover {
-    background-color: var(--color-primary); /* Mantenemos el verde original */
-    transform: scale(1); /* Evitamos que se haga grande al pasar el ratón */
+    background-color: var(--color-primary); 
+    transform: scale(1); 
 }
 
-/* Estado del cronómetro cuando ya se puede fichar */
 .timer-display.ready {
-    color: var(--color-primary); /* Se pone verde */
-    text-shadow: 0 0 15px rgba(46, 125, 50, 0.2); /* Pequeño brillo sutil */
-    transition: color 0.5s ease; /* Transición suave para que no cambie de golpe */
+    color: var(--color-primary); 
+    text-shadow: 0 0 15px rgba(46, 125, 50, 0.2); 
+    transition: color 0.5s ease; 
 }
 
-/* ========================================== */
-/* PESTAÑAS DEL PANEL DE ADMINISTRACIÓN       */
-/* ========================================== */
 .toggle-btn {
-    flex: 1; /* Ocupan la mitad del espacio cada uno */
+    flex: 1; 
     padding: 0.8rem;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--color-primary);
     background: transparent;
     border: var(--border-width) solid var(--color-primary);
-    border-radius: var(--radius-input); /* Forma de pastilla */
+    border-radius: var(--radius-input); 
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-/* Estado activo de la pestaña */
 .toggle-btn.active {
     background: var(--color-primary);
     color: white;
