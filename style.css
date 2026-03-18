@@ -313,3 +313,29 @@ p  { font-size: var(--size-body); color: #555; line-height: 1.5; }
     text-shadow: 0 0 15px rgba(46, 125, 50, 0.2); /* Pequeño brillo sutil */
     transition: color 0.5s ease; /* Transición suave para que no cambie de golpe */
 }
+
+/* ========================================== */
+/* PESTAÑAS DEL PANEL DE ADMINISTRACIÓN       */
+/* ========================================== */
+.toggle-btn {
+    flex: 1; /* Ocupan la mitad del espacio cada uno */
+    padding: 0.8rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: transparent;
+    border: var(--border-width) solid var(--color-primary);
+    border-radius: var(--radius-input); /* Forma de pastilla */
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Estado activo de la pestaña */
+.toggle-btn.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+.toggle-btn:active {
+    transform: scale(0.95);
+}

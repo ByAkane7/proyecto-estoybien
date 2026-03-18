@@ -372,6 +372,28 @@ async function error1(err) {
     }
 }
 
+/**
+ * Alterna entre las pestañas de Check-ins y Emergencias en el panel Admin.
+ */
+function switchAdminTab(tab) {
+    const btnCheckin = document.getElementById('btn-tab-checkin');
+    const btnEmer = document.getElementById('btn-tab-emer');
+    const contCheckin = document.getElementById('admin-registros');
+    const contEmer = document.getElementById('admin-emergencias');
+
+    if (tab === 'checkin') {
+        btnCheckin.classList.add('active');
+        btnEmer.classList.remove('active');
+        contCheckin.style.display = 'block';
+        contEmer.style.display = 'none';
+    } else {
+        btnEmer.classList.add('active');
+        btnCheckin.classList.remove('active');
+        contEmer.style.display = 'block';
+        contCheckin.style.display = 'none';
+    }
+}
+
 // ==========================================
 // PANEL DE ADMINISTRACIÓN (VER BASE DE DATOS)
 // ==========================================
@@ -379,6 +401,9 @@ async function error1(err) {
 async function showAdmin() {
     // 1. Mostramos la pantalla
     showScreen('screen-admin');
+
+    // 2. Forzamos que Check-ins sea la pestaña por defecto al entrar
+    switchAdminTab('checkin');
     
     const contRegistros = document.getElementById('admin-registros');
     const contEmergencias = document.getElementById('admin-emergencias');

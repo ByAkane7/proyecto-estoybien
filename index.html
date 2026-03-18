@@ -159,18 +159,21 @@
                     <i class="fa-solid fa-database"></i> Registros
                 </h1>
 
-                <h2 style="margin-top: 1rem; font-size: 1.2rem; align-self: flex-start;">Últimas Emergencias</h2>
-                <div id="admin-emergencias" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem;">
+                <div style="display: flex; gap: 1rem; width: 100%; max-width: 380px; margin: 1.5rem 0;">
+                    <button id="btn-tab-checkin" class="toggle-btn active" onclick="switchAdminTab('checkin')">Check-ins</button>
+                    <button id="btn-tab-emer" class="toggle-btn" onclick="switchAdminTab('emer')">Emergencias</button>
+                </div>
+
+                <div id="admin-registros" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem; display: block;">
                     Cargando...
                 </div>
 
-                <h2 style="margin-top: 2rem; font-size: 1.2rem; align-self: flex-start;">Últimos Check-ins</h2>
-                <div id="admin-registros" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem;">
+                <div id="admin-emergencias" style="width: 100%; max-width: 380px; text-align: left; font-size: 1rem; display: none;">
                     Cargando...
                 </div>
             </div>
         </div>
-
+        
     <script src="script.js"></script>
 </body>
 </html>
