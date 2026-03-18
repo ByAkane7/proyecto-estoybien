@@ -416,16 +416,34 @@ async function showAdmin() {
         const respuesta = await fetch('https://backend-estoybien.onrender.com/api/admin/datos');
         const datos = await respuesta.json();
 
-        // 3. Pintamos las Emergencias (en rojo para que destaquen)
+    // 3. Pintamos las Emergencias (en rojo para que destaquen)
         if (datos.emergencias && datos.emergencias.length > 0) {
             let htmlEmer = "";
             datos.emergencias.forEach(e => {
                 const fecha = new Date(e.fecha_emergencia).toLocaleString();
+                // Generamos la URL segura de Google Maps para el iframe
+                const mapUrl = `https://maps.google.com/maps?q=${e.latitud},${e.longitud}&hl=es&z=15&output=embed`;
+
+                // --- NUEVO DISEÑO RESPONSIVO DE TARJETA CON MAPA ---
                 htmlEmer += `
-                <div style="background: #fff5f5; padding: 10px; margin-bottom: 10px; border-radius: 10px; border: 2px solid var(--color-alert);">
-                    <strong>Tarjeta:</strong> ${e.tarjeta_sanitaria}<br>
-                    <strong>Lat:</strong> ${e.latitud} | <strong>Lon:</strong> ${e.longitud}<br>
-                    <span style="color: #888; font-size: 0.9em;"><i class="fa-regular fa-clock"></i> ${fecha}</span>
+                <div style="background: #fff5f5; margin-bottom: 1rem; border-radius: 15px; border: 2px solid var(--color-alert); box-shadow: 0 4px 10px var(--color-shadow); overflow: hidden; display: flex; flex-wrap: wrap;">
+                    
+                    <div style="flex: 1 1 100%; width: 100%; padding: 1rem; box-sizing: border-box;">
+                        <strong>Tarjeta:</strong> ${e.tarjeta_sanitaria}<br>
+                        <strong>Lat:</strong> ${e.latitud} | <strong>Lon:</strong> ${e.longitud}<br>
+                        <span style="color: #888; font-size: 0.9em;"><i class="fa-regular fa-clock"></i> ${fecha}</span>
+                    </div>
+
+                    <div style="flex: 1 1 100%; width: 100%; min-height: 180px; position: relative;">
+                        <iframe 
+                            src="${mapUrl}" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            style="border:0; position: absolute; top:0; left:0;" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>`;
             });
             contEmergencias.innerHTML = htmlEmer;
