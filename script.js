@@ -125,7 +125,7 @@ function triggerAlert() {
     clearInterval(timerInterval); 
     showScreen('screen-alert');
     
-    let emergencySeconds = 60;
+    let emergencySeconds = 20;
     const alertSecondsElement = document.getElementById('alert-seconds');
     alertSecondsElement.textContent = emergencySeconds;
     
